@@ -1,0 +1,26 @@
+<div class="modal fade" id="rejeita-{{ objects.id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h4 class="modal-title">Rejeita Dadus Survey</h4>
+        <button type="button" class="close" data-dismiss="modal">X</button>
+      </div>
+      
+        {% csrf_token %}
+      <form action="{% url 'rejeitaSurvey' %}" method="GET">
+      <div class="modal-body">
+        Ita Boot hakarak Rejeita Dadus Survey iha aldeia {{ objects.aldeia | upper }}? Fo Komentariu!
+          <input type="hidden" name="hashed" value="{{objects.hashed}}">
+          <!-- <input type="hidden" name="list" value="list"> -->
+          <textarea class="form-control" type="text" required name="rejeita_info">
+          </textarea>
+      </div>
+        <div class="text-center my-2">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Lae</button>
+          <button type="submit" name="submit" class="btn btn-info">Manda Fila</button>
+        </div>
+        </form>
+    </div>
+  </div>
+</div>

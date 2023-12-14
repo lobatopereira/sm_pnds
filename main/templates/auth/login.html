@@ -1,0 +1,40 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+	<div class="row justify-content-center mt-5">
+		<div class="col-sm-8 mb-5">
+			<center>
+				<div class="row">
+					<div class="col-sm-12">
+						<img align="center" src="{% static 'main/images/pnds.png' %}" height="70%">
+					</div>
+				</div>
+				<h3>SISTEMA MONITORIZASAUN </h3>
+				<h3>PROGRAMA NACIONAL DESENVOLVIMENTO DO SUCO </h3>
+				<h3>(PNDS) </h3>
+				<hr />
+				<h6>MUNISIPIU DILI<br/>
+				</h6>
+			</center>
+		</div>
+		<div class="col-sm-4">
+			<div class="card border-success shadow-lg">
+				<div class="card-header bg-danger text-center" style="color: white">
+					LOGIN
+				</div>
+				<div class="card-body">
+					<form method="POST">
+						{% csrf_token %}
+						{{ form|crispy }}
+						<div class="form-group d-flex align-items-center justify-content-center mt-4 mb-0">
+							<button class="btn btn-sm btn-outline-success" type="submit">Log In <i class="fa fa-sign-in"></i></button>
+						</div>
+					</form>
+				</div> <!--end card-body-->
+			</div> <!--end card-->
+		</div> <!--end col-->
+	</div> <!--end row-->
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container shadow mt-3 p-2">
+  <div class="text-center mb-5">
+    <h4 style="text-transform: uppercase;">Benvindu Mai Sistema Monitorizasaun PNDS</h4>
+  </div>
+  <div class="row text-center">
+    <div class="col-md-6 mt-5">
+      <h5>Programa Nacional Desenvolvimento do Suco <br>(PNDS)</h5>
+      <img align="center" src="{% static 'main/images/pnds.png' %}" width="35%" class="mt-4">
+    </div>
+    <div class="col-md-6 mt-5 border pt-5">
+      <h5 style="text-transform: uppercase;">Programa PNDS</h5>
+      <div class="mt-5">
+        {% for data in programa %}
+        <h6 style="text-transform: capitalize;"><a href="{% url 'listaImplementasaunPrograma' data.hashed %}">Programa {{data.naran}}</a></h6>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <hr>
+  <center><h3>On Going Implementasaun Programa</h3></center>
+  <hr>
+  <div class="row mt-5">
+    {% for data in ongoingImplementasaun %}
+    <div class="col-md-4">
+      <div class="card bg-success border-danger">
+        <div class="card-body d-flex justify-content-between">
+          <div>
+            {% if data.image %}<img src="{{data.image.url}}" height="100px" width="100px">{%else%}No Image{%endif%}
+          </div>
+          <div class="text-light">
+            <small>Programa : {{data.programa}}</small><br>
+            <small>Suku : {{data.village}}</small><br>
+            <small>Hahu : {{data.startdate|date:"d/M/Y"}}</small><br>
+            <small>Status : <b class="text-danger">{{data.statusImplementasaun}}</b></small><br>
+            <div class="text-right"><a href="{% url 'detalluImplementasaunPrograma' data.hashed %}" style="color: #21548b;"><span class="fa fa-eye"> Detallu</span></a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}
+

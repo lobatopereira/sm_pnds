@@ -1,0 +1,216 @@
+{% extends "main/layout.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block headStyle %}
+<style type="text/css">
+  table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+</style>
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container mt-3 p-3">
+            <header> 
+                <ol class="breadcrumb mb-1 mt-1">
+                  <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+                  {% if page == "detail" %}
+                  <li class="breadcrumb-item"><a href="{% url 'ukl-dash' %}">Dashboard UKL</a></li>
+                  {% endif %}
+                  <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+                </ol>
+            </header>
+            {% if messages %}
+                {% for message in messages %} 
+                    <div class="alert alert-{{ message.tags }} alert-dismissable">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      {{message}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card shadow-lg pt-1 rounded" style="border-top: 3px solid #bb0303;">
+                        <div class="card-header">
+                          {% if group == 'admpost' %}
+                            {% if objects.is_sent == False %}
+                          <a href="{% url 'SentSurvey' objects.hashed %}" class="btn btn-sm btn-warning"><i class="fa fa-send"></i> Manda ba Dir. PNDS Munisipiu</a>
+                            {% elif objects.is_sent == True and objects.is_approved == True %}
+                              <small class="badge badge-primary">Processo Aprovado</small>
+                            {% elif objects.is_sent == True and objects.is_approved == False %}
+                              <small class="badge badge-warning">In Progress....</small>
+                            {% endif%}
+                          {% elif group == 'admin' %}
+                            {% if objects.is_sent == True %}
+                              <small class="badge badge-warning">In Progress....</small>
+                            {% endif%}
+                          {% endif%}
+                        </div>
+                        <div class="card-body">
+                          <div class="d-flex justify-content-begin border">
+                            <div class="ml-3 table-responsive">
+                              <table border="0" cellpadding="7">
+                                <tr><th>Munisipiu </th><td>: {{objects.municipality}}</td><th>Observasaun</th></tr>
+                                <tr><th>Postu </th><td>: {{objects.administrativepost}}</td><td rowspan="5">{{objects.description|safe}}</td></tr>
+                                <tr><th>Suku </th><td>: {{objects.village}}</td></tr>
+                                <tr><th>Aldeia </th><td>: {{objects.aldeia}}</td></tr>
+                                <tr><th>Data Survey </th><td>: {{objects.surveyDate}}</td></tr>
+                                <tr><th> </th><td> {% if objects.is_sent == False %}<a style="text-decoration: none;" href="{% url 'UpdateSurveyUKL' objects.hashed %}" class="btn btn-sm btn-info" title="Altera Survey"><i class="fa fa-pencil"></i></a>{%endif%}</td></tr>
+                              </table>
+                            </div>
+                          </div>
+                          <hr>
+                          <h5>Dadus Benefisiariu</h5>
+                          <div class="text-right my-2">
+                            {% if objects.is_sent == False %}
+                            <a href="{% url 'AddBenefisiariu' objects.hashed %}" class="btn btn-sm btn-info mr-2" title="Add Data"> <i class="fa fa-plus-square"></i> Rejistu Benefisiariu</a>
+                            {%endif%}
+                          </div>
+                                {% for data in benefisiariu %}
+                                <div class="col-lg-12">
+                                  <div class="card p-2" id="cardDemo3">
+                                    <div class="table-responsive">
+                                      <table border="0">
+                                        <tbody>
+                                          <tr>
+                                            <th width="5%" class="text-center">{{forloop.counter}}</th>
+                                            <td class="" width="150px">
+                                              <img width="100px" height="100px" class="rounded" src="{{ data.0.image.url }}" alt=""/>
+                                            </td>
+                                            <td>
+                                              <div class="px-1">
+                                                <h5 class="mb-1">
+                                                  <b>{{data.0.naran}}</b>
+                                                  <div style="float: right">
+                                                    <b>Eleitoral :</b>  {{data.0.eleitoral}}
+                                                  </div>
+                                                </h5>
+                                                <small class="text-muted">
+                                                  Data Rejistu Iha : {{data.0.date_created|date:'d-M-Y'}} 
+                                                </small>
+                                                <br>
+                                                {% if objects.is_approved == True %}
+
+                                                  {% if data.1 == "not implemented" %}
+                                                  <a class="" href="{% url 'implementa-ukl-benef' data.0.hashed %}">
+                                                   <span class="badge badge-primary p-2"> Implementa </span>
+                                                  </a>  
+                                                  {% elif data.1 == "implemented" %}
+                                                  <a class="" href="{% url 'DMUKLImplementBenefDetail' data.2.hashed %}">
+                                                    <span class="badge badge-warning p-2"> Detallu Implementasaun </span>
+                                                  </a>
+                                                  {%endif%}
+                                                {%endif%}
+                                              </div>
+                                              <a class="float-right" href="#" data-tool="card-collapse" data-toggle="tooltip" title="" data-start-collapsed="" data-original-title="Detallu Dados">
+                                                 <span class="badge badge-success"> Detallu </span>
+                                              </a>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+
+                                    <div class="card-wrapper" style="max-height: 6px; transition: max-height 0.1s ease 0s; overflow: hidden;">
+                                      <div class="card-body">
+                                        <legend>Informasaun Detallu</legend>
+                                        <div class="table-responsive">
+                                          <table  class="table table-hover table-striped">
+                                            <tr>
+                                              <th>Munisipiu</th>
+                                              <th>Postu</th>
+                                              <th>Suku</th>
+                                              <th>Aldeia</th>
+                                              <th>Kontaktu</th>
+                                              <th class="text-center">Asaun</th>
+                                            </tr>
+                                            <tr>
+                                              <td>{{ data.0.municipality.name }}</td>
+                                              <td>{{ data.0.administrativepost.name }}</td>
+                                              <td>{{ data.0.village.name }}</td>
+                                              <td>{{ data.0.aldeia.name }}</td>
+                                              <td>{{ data.0.nu_telefone }}</td>
+                                              <td>
+                                                {% if objects.is_sent == False %}
+                                                <div class="d-flex justify-content-center"> 
+                                                  <div class="flex-fill"><a href="{% url 'UpdateBenefisiariu' data.0.hashed %}" class="btn btn-sm btn-success" title="Altera Dadus Benefisiariu"><i class="fa fa-pencil"></i> Altera</a></div>
+                                                </div>
+                                                {%endif%}  
+                                              </td>
+                                            </tr>
+                                          </table>
+                                          <div class="text-left my-2">
+                                            {% if objects.is_sent == False %}
+                                            <a href="{% url 'UploadBenefisiariuDoc' data.0.hashed %}" class="btn btn-sm btn-info mr-2" title="Add Data"> <i class="fa fa-plus-square"></i> Upload Dokumentu</a>
+                                            <small>Hasai Fotografia Dokumentu no Upload ho formatu <b>.PNG</b> ka <b>.JPG</b></small>
+                                            {%endif%}
+                                          </div>
+                                          <div class="d-flex justify-content-begin">
+                                          {% for i in data.benefitDocs %}
+                                            <div class="border border-secondary p-3 mr-2">
+                                              <span class="badge badge-secondary"><a href="{{i.image.url}}" target="_blank" class="text-white">{{i.name}}</a></span>
+                                              <br>
+                                              {% if objects.is_sent == False %}
+                                              <center><a href="{% url 'UpdateBenefisiariuDoc' i.hashed %}" class="text-info" title="Update"><i class="fa fa-edit"></i></a>
+                                              <a href="#removeBenDoc{{ i.id }}" class="text-danger" style="text-decoration: none;" data-toggle="modal" title="Delete"><i class="fa fa-trash"></i></a></center>
+                                              {%endif%}
+                                            </div>
+                                            {% include 'benefisiariu/benDocRemoveModal.html' %}
+                                          {%endfor%}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                  </div>
+                                </div>
+                                {% endfor %}
+                          </div>
+                          <!-- Imajen -->
+                          <br>
+                          <hr>
+                          <div class="p-3">
+                            <h5>Dokumentasaun Survey</h5>
+                            {% if objects.is_sent == False %}
+                            <div class="text-left my-2">
+                              <a href="{% url 'AddSurveyImage' objects.hashed %}" class="btn btn-sm btn-info mr-2" title="Upload Imajen Survey"> <i class="fa fa-upload"></i> Upload Imajen Survey</a>
+                            </div>
+                            {% endif %}
+                            <div class="row">
+                              {% for obj in surveyImage %}
+                              <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                                <a href="{{ obj.image.url }}" class="fancybox" rel="ligthbox">
+                                  <img src="{{ obj.image.url }}" class="zoom img-fluid" />
+                                </a>
+                                {% if objects.is_sent == False %}
+                                <center>
+                                  <a href="{% url 'UpdateSurveyImage' obj.hashed %}" style="text-decoration:none;" class="mr-2" title="Update Imajen Survey">
+                                    <span class="badge badge-warning mr-2">Update</span>
+                                  </a>
+                                  <a href="#removeImage{{ obj.id }}" style="text-decoration: none;" data-toggle="modal">
+                                    <span class="badge badge-danger">Delete</span>
+                                  </a>
+                                </center>
+                                {%endif%}
+                              </div>
+                              {% include 'survey/imageRemoveModal.html' %}
+                              {% endfor %}
+
+                            </div>
+                          </div>
+                        </div> <!--end card-body-->
+                    </div> <!--end card-->
+                </div> <!--end col-->
+            </div> <!--end row-->
+        </div>
+    </section>
+
+{% endblock %}
+{% block scripts %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link rel="stylesheet" href="{% static 'main/css/gallery.css' %}" media="screen" />
+<script src="{% static 'main/js/gallery.js' %}"></script>
+<script src="{% static 'main/js/app.js' %}"></script>
+{% endblock %}

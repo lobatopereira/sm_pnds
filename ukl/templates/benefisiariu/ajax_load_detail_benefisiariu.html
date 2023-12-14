@@ -1,0 +1,16 @@
+<div class="row px-5 border pt-3 mx-3">
+	<div class="col-6 col-md-6 col-lg-3 text-center"><a href="{{objects.image.url}}" target="_blank"><img src="{{objects.image.url}}" width="150px" height="150px"></a></div>
+	<div class="col-6 col-md-6 col-lg-3 pt-5"><label class="text-muted">Naran Kompletu</label><p class="border-bottom">{{objects.naran}}</p></div>
+	<div class="col-6 col-md-6 col-lg-3 pt-5"><label class="text-muted">Seksu</label><p class="border-bottom">{{objects.seksu}}</p></div>
+	<div class="col-6 col-md-6 col-lg-3 pt-5"><label class="text-muted">Nu. Eleitoral</label><p class="border-bottom">{{objects.eleitoral}}</p></div>
+	<div class="col-6 col-md-6 col-lg-3 mt-3"><label class="text-muted">Munisipiu</label><p class="border-bottom">{{objects.municipality}}</p></div>
+	<div class="col-6 col-md-6 col-lg-3 mt-3"><label class="text-muted">Postu</label><p class="border-bottom">{{objects.administrativepost}}</p></div>
+	<div class="col-6 col-md-6 col-lg-3 mt-3"><label class="text-muted">Suku</label><p class="border-bottom">{{objects.village}}</p></div>
+	<div class="col-6 col-md-6 col-lg-3 mt-3"><label class="text-muted">Aldeia</label><p class="border-bottom">{{objects.aldeia}}</p></div>
+	<div class="col-6 col-md-6 col-lg-3"><label class="text-muted">Nu. Kontaktu</label><p class="border-bottom">{{objects.nu_telefone}}</p></div>
+	<div class="col-6 col-md-6 col-lg-3"><label class="text-muted">Data Survey</label><p class="border-bottom">{{objects.survey.surveyDate|date:"d-M-Y"}}</p></div>
+	{% for i in objects.benefitDocs %}
+	<div class="col-6 col-md-6 col-lg-3"><label class="text-muted"></label><p><a href="{{i.image.url}}" class="badge badge-secondary p-2" target="_blank"><i class="fa fa-image"></i> {{i.name}}</a></p></div>
+	{% endfor %}
+</div>
+<hr>

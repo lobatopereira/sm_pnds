@@ -1,0 +1,84 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Monitoring</title>
+
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static 'main/images/pnds1.jpg' %}">
+	<link rel="stylesheet" href="{% static 'main/bootstrap/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'main/font-awesome/css/font-awesome.min.css' %}">
+	<link rel="stylesheet" href="{% static 'main/css/table-responsive.css' %}" media="screen">
+	<link href="{% static 'main/css/main.css' %}" rel="stylesheet">
+	{% block headStyle %}{% endblock %}
+
+</head> 
+<body>
+
+	{% include 'main/navbar.html' %}
+<div class="container-fluid">
+	<div class="container" align="right">
+        {% if request.user.groups.all.0.name == 'admin' %}
+        <span class="bg-danger p-1 pl-2 pr-2 text-white" style="font-size: 0.7rem">P&aacute;jina Admin Geral<span/>
+        {% endif %}
+        {% if request.user.groups.all.0.name == 'dir_nac' %}
+        <div class="d-flex justify-content-between">
+            <span class="bg-secondary p-1 pl-2 pr-2 text-white" style="font-size: 0.7rem">Diretor Nacional PNDS : {{request.user.userFunsionariu.funsionariu.name}}</span>
+        </div>
+        {% endif %}
+        {% if request.user.groups.all.0.name == 'dir_mun' %}
+        <div class="d-flex justify-content-between">
+            <span class="bg-secondary p-1 pl-2 pr-2 text-white" style="font-size: 0.7rem">Diretor PNDS Munisipiu : {{request.user.userFunsionariu.funsionariu.areamunicipality}}</span>
+        </div>
+        {% endif %}
+        {% if request.user.groups.all.0.name == 'admpost' %}
+        <span class="bg-success p-1 pl-2 pr-2 text-white" style="font-size: 0.7rem">Funsionariu Postu :{{request.user.userFunsionariu.funsionariu.areaadministrativepost}}</span>
+        {% endif %}
+    </div>
+	{% block content %}  
+
+
+	{% endblock %}
+
+</div>
+
+<footer class="footer-container text-dark text-center mt-5 p-3">
+  <div class="text-dark">
+    © 2023 Copyright :
+    <a href="#" class=""> PNDS -</a>
+    <a href="{% url 'home' %}">Monitoring System</a>
+  </div>
+  <small class="text-dark">
+    Developed by :
+    <a href="#" target="_blank">Fernanda</a> 
+  </small>
+</footer>
+</body> 
+<!-- Optional JavaScript -->
+		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		<script src="{% static 'main/js/jquery.min.js' %}"></script>
+		<!-- <script src="{% static 'main/bootstrap/js/bootstrap.min.js' %}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
+		<script src="{% static 'main/bootstrap/js/bootstrap.min.js' %}"></script>
+		<!-- Datatable -->
+		<link href="{% static 'main/datatables/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+		<script src="{% static 'main/datatables/js/jquery.dataTables.min.js' %}" type="text/javascript"></script>
+		<script src="{% static 'main/datatables/js/dataTables.bootstrap4.min.js' %}" type="text/javascript"></script>
+        {% if user.is_authenticated %}
+            {% if user.groups.all.0.name == 'dir_mun' %}
+                <script src="{% static 'main/notif/notif_badge_dir_mun.js' %}"></script>
+                <script src="{% static 'main/notif/notif_survey_dir_mun.js' %}"></script>
+                <script src="{% static 'main/notif/notif_implementation_dir_mun.js' %}"></script>
+                <script src="{% static 'main/notif/notif_monitoring_implementasaun.js' %}"></script>
+            {% elif user.groups.all.0.name == 'admpost' %}
+                <script src="{% static 'main/notif/notif_badge_fun_post.js' %}"></script>
+                <script src="{% static 'main/notif/notif_survey_rejeitadu_fun_post.js' %}"></script>
+                <script src="{% static 'main/notif/notif_implementasaun_rejeitadu_fun_post.js' %}"></script>
+                <script src="{% static 'main/notif/notif_monitoring_implementasaun_rejeitadu.js' %}"></script>
+            {% endif %}
+        {% endif %}
+		{% block scripts %}{% endblock %}
+</html> 

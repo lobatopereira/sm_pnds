@@ -1,0 +1,91 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<section>
+        <div class="container mt-5 border border-danger p-3">
+          <!-- Page Header-->
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+                    {% if messages %}
+                        {% for message in messages %} 
+                            <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+          {% if page == "list" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center">
+                  <div class="d-flex justify-content-between">
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-hover table-striped">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th>Benefisiariu</th>
+                          <th>Eleitoral</th>
+                          <th>Munisipiu</th>
+                          <th>Postu</th>
+                          <th>Suku</th>
+                          <th>Aldeia</th>
+                          <th>Data Survey</th>
+                          <th>Status</th>
+                          <th class="text-center">Asaun</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in objects %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td>{{ data.benefisiariu.naran }}</td>
+                          <td>{{ data.benefisiariu.eleitoral }}</td>
+                          <td>{{ data.municipality.name }}</td>
+                          <td>{{ data.administrativepost.name }}</td>
+                          <td>{{ data.village.name }}</td>
+                          <td>{{ data.aldeia.name }}</td>
+                          <td>{{ data.survey.surveyDate|date:"d-M-Y" }}</td>
+                          <td>
+                            {{data.statusImplementasaun}}
+                          </td>
+                          <td>
+                            <div class="d-flex justify-content-center"> 
+                              <div class="flex-fill"><a href="{% url 'DMUKLImplementBenefNotifDetail' data.hashed %}" class="btn btn-sm btn-info" title="Detallu Notifikasaun"><i class="fa fa-eye"></i> Detallu</a></div>
+                              
+                            </div>  
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {%endif%}
+          {% if page == "detail" %}
+          koko
+          {%endif%}
+        </div>
+      </section>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

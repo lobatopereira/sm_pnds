@@ -1,0 +1,221 @@
+{% extends "main/layout.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block headStyle %}
+<style type="text/css">
+  table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+</style>
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container mt-3 p-3">
+            <header> 
+                <ol class="breadcrumb mb-1 mt-1">
+                  <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+                  {% if group == "dir_mun" %}
+                  <li class="breadcrumb-item"><a href="{% url 'dirmun-ukl-dash' %}">Dashboard UKL</a></li>
+                  {% endif %}
+                  <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+                </ol>
+            </header>
+            {% if messages %}
+                {% for message in messages %} 
+                    <div class="alert alert-{{ message.tags }} alert-dismissable">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      {{message}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card shadow-lg pt-1 rounded" style="border-top: 3px solid #bb0303;">
+                        <div class="card-header">
+                          
+                          {% if group == 'admin' %}
+                            {% if objects.is_sent == True %}
+                              <small class="badge badge-warning">In Progress....</small>
+                            {% endif%}
+                          {% endif%}
+                              <small class="badge badge-primary p-2">{{objects.statusImplementasaun}} ....</small>
+                          {% if group == 'dir_mun' %}
+                            {% if objects.is_sent == True and objects.is_approved == False %}
+                              <a href="#rejeita-{{ objects.id}}" class="btn btn-sm btn-danger" style="text-decoration: none;" data-toggle="modal" title="Rejeita"><i class="fa fa-send"></i> Rejeita no Manda Fila</a>
+                              <a href="#aprova-{{ objects.id}}" class="btn btn-sm btn-success" style="text-decoration: none;" data-toggle="modal" title="Aprova"><i class="fa fa-check"></i> Aprova</a>
+                            {% endif%}
+                          {% endif%}
+                        </div>
+                        <div class="card-body">
+                          
+                          <h5>Info Benefisiariu</h5>
+                          <div class="text-right my-2">
+                          </div>
+                                <div class="col-lg-12">
+                                  <div class="card p-2" id="cardDemo3">
+                                    <div class="table-responsive">
+                                      <table border="0">
+                                        <tbody>
+                                          <tr>
+                                            <th width="5%" class="text-center">{{forloop.counter}}</th>
+                                            <td class="" width="150px">
+                                              <img width="100px" height="100px" class="rounded" src="{{ objects.benefisiariu.image.url }}" alt=""/>
+                                            </td>
+                                            <td>
+                                              <div class="px-1">
+                                                <h5 class="mb-1">
+                                                  <b>{{objects.benefisiariu.naran}}</b>
+                                                  <div style="float: right">
+                                                    <b>Eleitoral :</b>  {{objects.benefisiariu.eleitoral}}
+                                                  </div>
+                                                </h5>
+                                                <small class="text-muted">
+                                                  Data Rejistu Iha : {{objects.benefisiariu.date_created|date:'d-M-Y'}} 
+                                                </small>
+                                              </div>
+                                              <a class="float-right" href="#" data-tool="card-collapse" data-toggle="tooltip" title="" data-start-collapsed="" data-original-title="Detallu Dados">
+                                                 <span class="badge badge-success"> Detallu </span>
+                                              </a>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+
+                                    <div class="card-wrapper" style="max-height: 6px; transition: max-height 0.1s ease 0s; overflow: hidden;">
+                                      <div class="card-body">
+                                        <legend>Informasaun Detallu</legend>
+                                        <div class="table-responsive">
+                                          <table  class="table table-hover table-striped">
+                                            <tr>
+                                              <th>Munisipiu</th>
+                                              <th>Postu</th>
+                                              <th>Suku</th>
+                                              <th>Aldeia</th>
+                                              <th>Kontaktu</th>
+                                              <th class="text-center">Asaun</th>
+                                            </tr>
+                                            <tr>
+                                              <td>{{ objects.benefisiariu.municipality.name }}</td>
+                                              <td>{{ objects.benefisiariu.administrativepost.name }}</td>
+                                              <td>{{ objects.benefisiariu.village.name }}</td>
+                                              <td>{{ objects.benefisiariu.aldeia.name }}</td>
+                                              <td>{{ objects.benefisiariu.nu_telefone }}</td>
+                                              <td>
+                                                {% if objects.survey.is_sent == False %}
+                                                <div class="d-flex justify-content-center"> 
+                                                  <div class="flex-fill"><a href="{% url 'UpdateBenefisiariu' objects.benefisiariu.hashed %}" class="btn btn-sm btn-success" title="Altera Dadus Benefisiariu"><i class="fa fa-pencil"></i> Altera</a></div>
+                                                </div>
+                                                {%endif%}  
+                                              </td>
+                                            </tr>
+                                          </table>
+                                          <div class="text-left my-2">
+                                            {% if objects.survey.is_sent == False %}
+                                            <a href="{% url 'UploadBenefisiariuDoc' objects.benefisiariu.hashed %}" class="btn btn-sm btn-info mr-2" title="Add Data"> <i class="fa fa-plus-square"></i> Upload Dokumentu</a>
+                                            <small>Hasai Fotografia Dokumentu no Upload ho formatu <b>.PNG</b> ka <b>.JPG</b></small>
+                                            {%endif%}
+                                          </div>
+                                          <div class="d-flex justify-content-begin">
+                                          {% for i in objects.benefisiariu.benefitDocs %}
+                                            <div class="border border-secondary p-3 mr-2">
+                                              <span class="badge badge-secondary"><a href="{{i.image.url}}" target="_blank" class="text-white">{{i.name}}</a></span>
+                                              <br>
+                                              {% if objects.survey.is_sent == False %}
+                                              <center><a href="{% url 'UpdateBenefisiariuDoc' i.hashed %}" class="text-info" title="Update"><i class="fa fa-edit"></i></a>
+                                              <a href="#removeBenDoc{{ i.id }}" class="text-danger" style="text-decoration: none;" data-toggle="modal" title="Delete"><i class="fa fa-trash"></i></a></center>
+                                              {%endif%}
+                                            </div>
+                                            {% include 'benefisiariu/benDocRemoveModal.html' %}
+                                          {%endfor%}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                  </div>
+                                </div>
+                          <!-- end benefisiariu -->
+                          <br>
+                          <h5>Detallu Implementasaun</h5>
+                          {% if group == 'admpost' %}
+                            {% if objects.is_sent == False %}
+                          <a href="{% url 'SentImplementation' objects.hashed %}" title="Manda dadus Implementasaun ba Dir. PNDS Munisipiu" class="btn btn-sm btn-warning"><i class="fa fa-send"></i> Manda ba Dir. PNDS Munisipiu</a>
+                            {% elif objects.is_sent == True %}
+                              <small class="badge badge-warning">In Progress....</small>
+                            {% endif%}
+                          {% endif%}
+                            <div class="row container mt-3">
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Munisipiu</label><p>{{objects.municipality.name}}</p></div>
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Postu</label><p>{{objects.administrativepost.name}}</p></div>
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Suku</label><p>{{objects.village.name}}</p></div>
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Aldeia</label><p>{{objects.aldeia.name}}</p></div>
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Data Survey</label><p>{{objects.survey.surveyDate|date:"d-M-Y"}}</p></div>
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Orsamentu Projetu</label><p>$ {{objects.budget}}</p></div>
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Data Hahu</label><p>{{objects.startdate|date:"d-M-Y"}}</p></div>
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Data Finaliza</label><p>{{objects.enddate|date:"d-M-Y"}}</p></div>
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Medida Uma</label><p>{{objects.medida}}</p></div>
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Distansia husi Munisipiu</label><p>{{objects.distancemun}}</p></div>
+                              <div class="col-12 col-md-6 col-lg-3"><label class="text-muted">Implementa husi</label><p>{{objects.implementby}}</p></div>
+                              {% if group == "admpost" %}
+                                {% if objects.is_sent == False %}
+                              <div class="col-12 col-md-6 col-lg-3"><a href="{% url 'FPAtualizaInfoImple' objects.hashed %}" class="btn btn-sm btn-info"><i class="fa fa-edit"></i> Atualiza Informasaun</a></div>
+                                {%endif%}
+                              {%endif%}
+                              <div class="col-12 col-md-6 col-lg-12"><label class="text-muted">Observasaun</label><p>{{objects.description|safe}}</p></div>
+                            </div>
+                          <hr>
+                          </div>
+                          <!-- Imajen -->
+                          <br>
+                          <hr>
+                          <div class="p-3">
+                            <h5>Dokumentasaun Projetu</h5>
+                            {% if group == "admpost" %}
+                              {% if objects.is_sent == False %}
+                              <div class="text-left my-2 mb-4">
+                                <a href="{% url 'AddImplementationImage' objects.hashed %}" class="btn btn-sm btn-info mr-2" title="Upload Imajen Implementasaun Projetu"> <i class="fa fa-upload"></i> Upload Imajen Implementasaun</a>
+                              </div>
+                              {% endif %}
+                            {% endif %}
+                            <div class="row">
+                              {% for obj in implementationImage %}
+                              <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                                <a href="{{ obj.image.url }}" class="fancybox" rel="ligthbox">
+                                  <img src="{{ obj.image.url }}" class="border border-dark p-1 zoom img-fluid" />
+                                </a>
+                            {% if group == "admpost" %}
+                                {% if objects.is_sent == False %}
+                                <center>
+                                  <a href="{% url 'UpdateImplementationImage' obj.hashed %}" style="text-decoration:none;" class="mr-2" title="Update Imajen Survey">
+                                    <span class="badge badge-warning mr-2">Update</span>
+                                  </a>
+                                  <a href="#removeImage{{ obj.id }}" style="text-decoration: none;" data-toggle="modal">
+                                    <span class="badge badge-danger">Delete</span>
+                                  </a>
+                                </center>
+                                {%endif%}
+                            {%endif%}
+                              </div>
+                              {% include 'implementation/imageRemoveModal.html' %}
+                              {% endfor %}
+
+                            </div>
+                          </div>
+                        </div> <!--end card-body-->
+                    </div> <!--end card-->
+                </div> <!--end col-->
+            </div> <!--end row-->
+        </div>
+    </section>
+{% include 'dir_mun/notif_implementation_reject_modal.html' %}
+{% include 'dir_mun/notif_implementation_aprova_modal.html' %}
+{% endblock %}
+{% block scripts %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link rel="stylesheet" href="{% static 'main/css/gallery.css' %}" media="screen" />
+<script src="{% static 'main/js/gallery.js' %}"></script>
+<script src="{% static 'main/js/app.js' %}"></script>
+{% endblock %}
